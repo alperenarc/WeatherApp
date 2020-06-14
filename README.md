@@ -4,7 +4,7 @@ This project is a simple weather app. It takes the coordinates of the location w
 <div style="text-align:center;">
 <h5>Some Screenshots</h5>
 <img src="https://user-images.githubusercontent.com/34552821/84604269-6cff7180-ae9d-11ea-9aca-7b0eed49ebb1.png" width="91%">
-<img src="https://user-images.githubusercontent.com/34552821/84604160-bc916d80-ae9c-11ea-8343-2f5d01bd3abb.png" width="30%">
+<img src="https://user-images.githubusercontent.com/34552821/84604316-ca93be00-ae9d-11ea-806e-1baea78f0fa4.png" width="30%">
 
 <img src="https://user-images.githubusercontent.com/34552821/84604147-a71c4380-ae9c-11ea-8a1e-d2714ca8776d.png" width="30%">
 
