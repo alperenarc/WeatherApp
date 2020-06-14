@@ -1,95 +1,88 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Header, Left, Body, Right, Button, Content, Icon, Title, Tabs, Tab, TabHeading } from 'native-base';
-import { StyleSheet, View, Text, StatusBar, SafeAreaView, ScrollView, RefreshControl, ActivityIndicator, } from 'react-native';
-import { Grid, Row, Col } from 'react-native-easy-grid'
+import { Container, Header, Body, Title, Tabs, Tab, TabHeading } from 'native-base';
+import { StyleSheet, View, Text, StatusBar, SafeAreaView, ActivityIndicator, } from 'react-native';
 import CurrentWeather from './src/components/currentWeather'
 import DailyForecast from './src/components/dailyForecast'
 import WeeklyForecast from './src/components/weeklyWeather'
 import Geolocation from '@react-native-community/geolocation'
+import Network from './src/network'
 
-function wait(timeout) {
-  return new Promise(resolve => {
-    setTimeout(resolve, timeout);
-  });
-}
 
 const App = () => {
-  const [city, setCity] = useState('Kayseri');
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [city, setCity] = useState();
   const [longitude, setLongitude] = useState();
   const [latitude, setLatitude] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
+  const [overFecthing, setOverFecthing] = useState(false);
 
-    wait(2000).then(() => setRefreshing(false));
-  }, [refreshing]);
   useEffect(() => {
     Geolocation.getCurrentPosition(data => {
       setLongitude(data.coords.longitude);
       setLatitude(data.coords.latitude);
-      setIsLoading(true);
+      setOverFecthing(true)
     })
-  }, [])
-  if (!city) {
-    return (
-      <View>
-        <Text>Choose City</Text>
-      </View>
-    )
-  } else {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
+    if (overFecthing) {
+      Network.getCityNameByCoords((data) => {
+        setCity(data);
+        setIsLoading(true);
+      }, [latitude, longitude])
+    }
+  }, [overFecthing])
 
+  return (
+    !isLoading ?
+      <View style={styles.centered}>
+        <ActivityIndicator size={30} />
+      </View>
+      :
+      <SafeAreaView style={{ flex: 1 }}>
         <Container>
-          <Header style={styles.header} hasTabs >
+          <Header style={styles.darkColor} hasTabs >
             <Body style={{ flexDirection: 'row' }}>
-              <Title>Kayseri </Title>
+              <Title style={{ paddingLeft: 10 }}>{city}</Title>
             </Body>
-            <Right>
-              <Button transparent>
-                <Icon type="MaterialCommunityIcons" name="menu" />
-              </Button>
-            </Right>
           </Header>
           <StatusBar barStyle='light-content' backgroundColor='#1D2028' />
           <Tabs>
-            <Tab heading={<TabHeading style={{ backgroundColor: '#1D2028' }}><Text style={{ color: '#fff' }}>Şimdi</Text></TabHeading>}>
-
-              <View style={styles.container}>
-                <ScrollView
-                  contentContainerStyle={styles.scrollView}
-                  refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  }
-                >
-                  <View>
-                    {
-                      isLoading ? <CurrentWeather long={longitude} lat={latitude} /> : <View style={{ justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator size={30} /></View>
-                    }
+            <Tab heading={
+              <TabHeading style={styles.darkColor}>
+                <Text style={{ color: '#fff' }}>
+                  Şimdi
+                </Text>
+              </TabHeading>
+            }>
+              {
+                isLoading ? <CurrentWeather long={longitude} lat={latitude} /> :
+                  <View style={styles.centered}>
+                    <ActivityIndicator size={30} />
                   </View>
-                </ScrollView>
-              </View>
-
-
+              }
             </Tab>
-            <Tab heading={<TabHeading style={{ backgroundColor: '#1D2028' }}><Text style={{ color: '#fff' }}>Saatlik</Text></TabHeading>}>
-              <DailyForecast long={longitude} lat={latitude}/>
+            <Tab heading={
+              <TabHeading style={styles.darkColor}>
+                <Text style={{ color: '#fff' }}>
+                  Saatlik
+                </Text>
+              </TabHeading>}>
+              <DailyForecast long={longitude} lat={latitude} />
             </Tab>
-            <Tab heading={<TabHeading style={{ backgroundColor: '#1D2028' }}><Text style={{ color: '#fff' }}>Hava Durumu</Text></TabHeading>}>
-              <WeeklyForecast long={longitude} lat={latitude}/>
+            <Tab heading={
+              <TabHeading style={styles.darkColor}>
+                <Text style={{ color: '#fff' }}>
+                  Hava Durumu
+                </Text>
+              </TabHeading>}>
+              <WeeklyForecast long={longitude} lat={latitude} />
             </Tab>
           </Tabs>
-
         </Container>
       </SafeAreaView>
-    );
-  }
 
+  )
 };
 
 const styles = StyleSheet.create({
-  header: {
+  darkColor: {
     backgroundColor: '#1D2028'
   },
   container: {
@@ -100,6 +93,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  centered:{
+    justifyContent: 'center', 
+    alignItems: 'center'
+  }
 });
 
 export default App;

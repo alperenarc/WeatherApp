@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Header, Left, Body, Right, Icon, Title } from 'native-base';
-import { StyleSheet, View, SafeAreaView, Text, ScrollView, ImageBackground, Button, TouchableOpacity, Dimensions, Linking, ActivityIndicator } from 'react-native';
+import { Icon } from 'native-base';
+import { StyleSheet, View, SafeAreaView, Text, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import { Grid, Row, Col } from 'react-native-easy-grid'
 import Network from '../../network'
 import IconType from '../../helper/IconType'
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCALE = 375;
 
 const scaleFontSize = (fontSize) => {
-    const ratio = fontSize / SCALE; // get ratio based on your standard scale 
+    const ratio = fontSize / SCALE; 
     const newSize = Math.round(ratio * SCREEN_WIDTH);
     return newSize;
 }
+
 const AbsoluteBackground = () => {
     return (
         <View style={styles.absolute} />
     )
 }
+
 const timeStampToDate = (timestamp) => {
     var data = []
     let unix_timestamp = timestamp
     var date = new Date(unix_timestamp * 1000);
     var hours = date.getHours();
     var minutes = "0" + date.getMinutes();
-
     var currentDay = new Date().getDate();
-
     var weatherDate = date.getDate();
     var weatherTime = hours + ':' + minutes.substr(-2)
 
@@ -38,13 +39,16 @@ const timeStampToDate = (timestamp) => {
         data.push(weatherTime);
         data.push('Yarın');
         return data
-    } else {
+    } else if (weatherDate === currentDay + 2){
         data.push(weatherTime);
         data.push('Yarından Sonra');
         return data
     }
-
-
+    else {
+        data.push(weatherTime);
+        data.push('Dün');
+        return data
+    }
 }
 const DailyForecast = (props) => {
     const [dailyForecast, setDailyForecast] = useState();
@@ -54,7 +58,6 @@ const DailyForecast = (props) => {
             setDailyForecast(res.hourly);
             setIsLoading(true);
         },[props.long,props.lat])
-
     }, [])
     if (!isLoading) {
         return (
@@ -65,7 +68,6 @@ const DailyForecast = (props) => {
     }
     else {
         return (
-
             <SafeAreaView style={styles.container}>
                 <ScrollView style={styles.scrollView}>
                     <AbsoluteBackground />
@@ -88,7 +90,7 @@ const DailyForecast = (props) => {
                                             </Row>
                                         </Col>
                                         <Col size={1} style={{ alignItems: 'center', justifyContent: 'center', padding: 3 }}>
-                                            <Text style={{ fontSize: scaleFontSize(30) }}>{(dailyForecast[obj].temp - 273.15).toFixed(0)}&#186;</Text> 
+                                            <Text style={{ fontSize: scaleFontSize(30) }}>{(dailyForecast[obj].temp).toFixed(0)}&#186;</Text> 
                                         </Col>
                                     </Row>
                                 )

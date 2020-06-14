@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Header, Left, Body, Right, Icon, Title } from 'native-base';
-import { StyleSheet, View, SafeAreaView, Text, ScrollView, ImageBackground, Button, TouchableOpacity, Dimensions, Linking, ActivityIndicator } from 'react-native';
+import {  Icon } from 'native-base';
+import { StyleSheet, View, SafeAreaView, Text, ScrollView,Dimensions, ActivityIndicator } from 'react-native';
 import { Grid, Row, Col } from 'react-native-easy-grid'
 import Network from '../../network'
 import IconType from '../../helper/IconType'
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCALE = 375;
 
 const scaleFontSize = (fontSize) => {
-    const ratio = fontSize / SCALE; // get ratio based on your standard scale 
+    const ratio = fontSize / SCALE;
     const newSize = Math.round(ratio * SCREEN_WIDTH);
     return newSize;
 }
+
 const AbsoluteBackground = () => {
-    return (
-        <View style={styles.absolute} />
-    )
+    return <View style={styles.absolute} />
 }
+
 const timeStampToDate = (timestamp) => {
-    
     var days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
     let unix_timestamp = timestamp
     var date = new Date(unix_timestamp * 1000);
     var dayName = days[date.getDay()];
     return dayName;
-
 }
+
 const WeeklyForecast = (props) => {
     const [weeklyForecast, setWeeklyForecast] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -69,9 +69,9 @@ const WeeklyForecast = (props) => {
                                         </Col>
                                         <Col size={2} style={{ alignItems: 'center', justifyContent: 'center', padding: 3 }}>
                                             <Text style={{ fontSize: scaleFontSize(25) }}>
-                                                {(weeklyForecast[obj].temp.max - 273.15).toFixed(0)}&#186;/
+                                                {(weeklyForecast[obj].temp.max).toFixed(0)}&#186;/
                                                 <Text style={{ fontSize: scaleFontSize(20) }}>
-                                                    {(weeklyForecast[obj].temp.min - 273.15).toFixed(0)}&#186;
+                                                    {(weeklyForecast[obj].temp.min).toFixed(0)}&#186;
                                                 </Text>
                                             </Text>
                                         </Col>
